@@ -37,8 +37,10 @@ class ControladorQuiz {
   bool get verResultados => _status == StatusQuiz.RESULTADOS;
 
   void selecionarAlternativa(String alternativa) {
-    _alternativaSelecionada = alternativa;
-    _status = StatusQuiz.RESPONDER;
+    if (!_respondeu) {
+      _alternativaSelecionada = alternativa;
+      _status = StatusQuiz.RESPONDER;
+    }
   }
 
   //método que determina o que fazer quando clicar no botão

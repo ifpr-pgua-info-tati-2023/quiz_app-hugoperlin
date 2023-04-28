@@ -21,7 +21,7 @@ class _HomePageState extends State<HomePage> {
 
   void _proximaPergunta() {
     setState(() {
-      //controladorQuiz.proximaPergunta();
+      controladorQuiz.acao();
     });
   }
 
@@ -33,40 +33,52 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text("Quiz App"),
       ),
-      body: Container(
-        padding: EdgeInsets.all(50),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                  "Questão ${controladorQuiz.indiceQuestaoAtual}/${controladorQuiz.quantidadeTotalQuestoes}"),
-              Divider(thickness: 5),
-              Text(questao.enunciado),
-              Divider(thickness: 5),
-              SizedBox(height: 10),
-              ...controladorQuiz.questaoAtual.alternativas.map(
-                (alternativa) {
-                  return BotaoAlternativa(
-                    alternativa: alternativa,
-                    acao: _selecionarAlternativa,
-                    selecionada:
-                        controladorQuiz.alternativaSelecionada == alternativa,
-                  );
-                },
+      body: controladorQuiz.verResultados
+          ? Container(
+              child: Center(
+                child: Text("Resultados"),
               ),
-              controladorQuiz.selecionouAlternativa
-                  ? BotaoAcao(
-                      texto: "Próxima pergunta",
-                      acao: _proximaPergunta,
-                    )
-                  : SizedBox(
-                      height: 100,
-                    )
-            ],
-          ),
-        ),
-      ),
+            )
+          : Container(
+              padding: EdgeInsets.all(50),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                        "Questão ${controladorQuiz.indiceQuestaoAtual}/${controladorQuiz.quantidadeTotalQuestoes}"),
+                    Divider(thickness: 5),
+                    Text(questao.enunciado),
+                    Divider(thickness: 5),
+                    SizedBox(height: 10),
+                    ...controladorQuiz.questaoAtual.alternativas.map(
+                      (alternativa) {
+                        return BotaoAlternativa(
+                          alternativa: alternativa,
+                          acao: _selecionarAlternativa,
+                          selecionada: controladorQuiz.alternativaSelecionada ==
+                              alternativa,
+                          acertou: controladorQuiz.acertouResposta,
+                          respondeu: controladorQuiz.respondeuPergunta,
+                        );
+                      },
+                    ),
+                    controladorQuiz.status != StatusQuiz.AGUARDAR
+                        ? BotaoAcao(
+                            texto: controladorQuiz.acabou
+                                ? "Resultados"
+                                : controladorQuiz.selecionouAlternativa
+                                    ? "Responder"
+                                    : "Próxima pergunta",
+                            acao: _proximaPergunta,
+                          )
+                        : SizedBox(
+                            height: 100,
+                          )
+                  ],
+                ),
+              ),
+            ),
     );
   }
 }
